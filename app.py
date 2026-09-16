@@ -43,18 +43,28 @@ def get_driver():
     if _driver is not None:
         return _driver
 
+    from selenium.webdriver.chrome.service import Service
+
     options = Options()
+    options.binary_location = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
     options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--no-zygote")
+    options.add_argument("--single-process")
     options.add_argument("--window-size=1280,900")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
     )
 
-    _driver = webdriver.Chrome(options=options)
+    driver_path = os.environ.get("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
+    service = Service(executable_path=driver_path)
+
+    _driver = webdriver.Chrome(service=service, options=options)
     return _driver
 
 
