@@ -53,8 +53,6 @@ def get_driver():
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-software-rasterizer")
     options.add_argument("--disable-extensions")
-    options.add_argument("--no-zygote")
-    options.add_argument("--single-process")
     options.add_argument("--window-size=1280,900")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
