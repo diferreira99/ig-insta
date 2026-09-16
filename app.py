@@ -67,11 +67,24 @@ def get_driver():
 
 
 def login_instagram(driver):
+    session_id = os.environ.get("IG_SESSIONID", "").strip()
+
+    if session_id:
+        # Login via cookie de sessão — evita o desafio de verificação por
+        # WhatsApp/SMS que o Instagram dispara pra logins novos vindos de servidor
+        driver.get("https://www.instagram.com/")
+        time.sleep(2)
+        driver.add_cookie({"name": "sessionid", "value": session_id, "domain": ".instagram.com"})
+        driver.get("https://www.instagram.com/")
+        time.sleep(4)
+        return
+
+    # Fallback: login tradicional com usuário/senha (pode disparar verificação)
     driver.get("https://www.instagram.com/accounts/login/")
     wait = WebDriverWait(driver, 20)
 
-    user_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
-    pass_field = driver.find_element(By.NAME, "password")
+    user_field = wait.until(EC.presence_of_element_located((By.NAME, "email")))
+    pass_field = driver.find_element(By.NAME, "pass")
 
     user_field.clear()
     user_field.send_keys(IG_USERNAME)
